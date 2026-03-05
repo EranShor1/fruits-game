@@ -28,3 +28,6 @@ Simple browser game for a child, runs on Samsung S22 via Chrome.
 - Don't add error handling beyond basics
 - Don't suggest refactoring unless asked
 - Output only the requested change, not the whole file
+# Skills
+Skills are in .claude/skills/ — do NOT load unless task explicitly requires it.
+- frontend-design: load only when asked to build or redesign UI
