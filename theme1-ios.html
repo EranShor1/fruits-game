@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=360, initial-scale=1.0">
+<title>Theme 1 - iOS 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Heebo', -apple-system, sans-serif;
+    width: 360px;
+    height: 800px;
+    overflow: hidden;
+    /* Deep space-glass gradient background */
+    background: linear-gradient(160deg, #e8f0ff 0%, #dce8ff 30%, #f0e8ff 60%, #e8f4ff 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    perspective: 1000px;
+  }
+
+  /* Ambient light orbs */
+  body::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,122,255,0.12), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(175,82,222,0.1), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .status-bar {
+    width: 100%;
+    padding: 14px 20px 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .score-bar {
+    width: 100%;
+    padding: 6px 20px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hearts { display: flex; gap: 6px; }
+  .heart {
+    font-size: 22px;
+    filter: drop-shadow(0 2px 4px rgba(255,59,48,0.35));
+    transition: transform 0.2s;
+  }
+
+  .score-pill {
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 20px;
+    padding: 5px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1c1c1e;
+    box-shadow:
+      0 4px 16px rgba(0,0,0,0.08),
+      0 1px 0 rgba(255,255,255,0.9) inset,
+      0 -1px 0 rgba(0,0,0,0.06) inset;
+  }
+
+  /* 3D card stage */
+  .photo-stage {
+    margin: 4px 0 12px;
+    position: relative;
+    z-index: 2;
+    perspective: 800px;
+  }
+
+  .photo-card {
+    width: 230px;
+    height: 230px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: cardFloat 4s ease-in-out infinite;
+  }
+
+  @keyframes cardFloat {
+    0%,100% { transform: rotateX(8deg) rotateY(-6deg) translateZ(0px); }
+    33%      { transform: rotateX(4deg) rotateY(6deg) translateZ(8px); }
+    66%      { transform: rotateX(10deg) rotateY(0deg) translateZ(4px); }
+  }
+
+  /* Main face */
+  .photo-face {
+    position: absolute;
+    inset: 0;
+    border-radius: 32px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    /* Layered 3D shadow system */
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.9) inset,
+      0 -2px 0 rgba(0,0,0,0.06) inset,
+      2px 0 0 rgba(255,255,255,0.6) inset,
+      -2px 0 0 rgba(0,0,0,0.04) inset,
+      0 20px 60px rgba(0,0,0,0.14),
+      0 8px 24px rgba(0,122,255,0.12),
+      0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  /* Top-left gloss shine */
+  .photo-face::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 65%; height: 45%;
+    background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 60%, transparent 100%);
+    border-radius: 32px 0 0 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Bottom rim light */
+  .photo-face::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 10%; right: 10%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+    border-radius: 0 0 32px 32px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* 3D extruded side — bottom edge */
+  .card-shadow-bottom {
+    position: absolute;
+    bottom: -14px; left: 8px; right: 8px;
+    height: 14px;
+    background: linear-gradient(180deg, rgba(0,0,0,0.10), rgba(0,0,0,0.02));
+    border-radius: 0 0 28px 28px;
+    filter: blur(4px);
+    transform: scaleX(0.92);
+    z-index: -1;
+  }
+
+  /* Hard drop shadow for 3D lift */
+  .card-hard-shadow {
+    position: absolute;
+    inset: 16px -4px -20px 4px;
+    background: rgba(0,80,200,0.10);
+    border-radius: 32px;
+    filter: blur(20px);
+    z-index: -2;
+  }
+
+  .question {
+    font-size: 17px;
+    font-weight: 500;
+    color: #3a3a3c;
+    text-align: center;
+    margin-bottom: 16px;
+    letter-spacing: 0.2px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .answers {
+    width: 320px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .answer-btn {
+    background: rgba(255,255,255,0.65);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.9);
+    border-radius: 18px;
+    padding: 18px 12px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    color: #1c1c1e;
+    cursor: pointer;
+    transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    /* 3D button effect */
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.95) inset,
+      0 -1px 0 rgba(0,0,0,0.05) inset,
+      0 4px 16px rgba(0,0,0,0.07),
+      0 1px 4px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Gloss on each button */
+  .answer-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 45%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
+    border-radius: 18px 18px 0 0;
+    pointer-events: none;
+  }
+
+  .answer-btn:active {
+    transform: scale(0.95) translateY(2px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .answer-btn.correct {
+    background: linear-gradient(145deg, #3dda64, #28c252);
+    border: 1px solid rgba(255,255,255,0.4);
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.4) inset,
+      0 -2px 0 rgba(0,0,0,0.15) inset,
+      0 6px 20px rgba(40,194,82,0.45),
+      0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .answer-btn.wrong {
+    background: linear-gradient(145deg, #ff5046, #e5342a);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.3) inset,
+      0 -2px 0 rgba(0,0,0,0.2) inset,
+      0 6px 20px rgba(229,52,42,0.45);
+  }
+
+  .divider {
+    width: 320px;
+    height: 0.5px;
+    background: rgba(60,60,67,0.1);
+    margin: 2px 0 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .next-btn {
+    width: 320px;
+    /* 3D extruded blue button */
+    background: linear-gradient(175deg, #1a8aff 0%, #0070f0 50%, #005fd4 100%);
+    border: none;
+    border-radius: 18px;
+    padding: 17px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+    letter-spacing: 0.3px;
+    transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    box-shadow:
+      0 2px 0 rgba(255,255,255,0.25) inset,
+      0 -3px 0 rgba(0,0,0,0.25) inset,
+      0 8px 24px rgba(0,122,255,0.45),
+      0 3px 8px rgba(0,0,0,0.15),
+      0 1px 0 #004ab8;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    overflow: hidden;
+  }
+
+  /* Gloss sweep on button */
+  .next-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 48%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.22), transparent);
+    border-radius: 18px 18px 0 0;
+    pointer-events: none;
+  }
+
+  .next-btn:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.2) inset,
+      0 -1px 0 rgba(0,0,0,0.2) inset,
+      0 4px 12px rgba(0,122,255,0.35),
+      0 1px 0 #004ab8;
+  }
+</style>
+</head>
+<body>
+  <div class="status-bar">
+    <span style="font-size:13px;color:#8e8e93;font-weight:500">מיקה 🍓</span>
+    <span style="font-size:13px;color:#8e8e93;font-weight:500">9:41</span>
+  </div>
+
+  <div class="score-bar">
+    <div class="hearts">
+      <span class="heart">❤️</span>
+      <span class="heart">❤️</span>
+      <span class="heart">🤍</span>
+    </div>
+    <div class="score-pill">⭐ 3</div>
+  </div>
+
+  <div class="photo-stage">
+    <div class="photo-card">
+      <div class="photo-face">🥭</div>
+    </div>
+    <div class="card-shadow-bottom"></div>
+    <div class="card-hard-shadow"></div>
+  </div>
+
+  <p class="question">מה הפרי הזה?</p>
+
+  <div class="answers">
+    <button class="answer-btn correct">מנגו</button>
+    <button class="answer-btn">תמר</button>
+    <button class="answer-btn">פפאיה</button>
+    <button class="answer-btn">ליצ'י</button>
+  </div>
+
+  <div class="divider"></div>
+  <button class="next-btn">← הפרי הבא</button>
+</body>
+</html>

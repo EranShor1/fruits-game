@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=360, initial-scale=1.0">
+<title>Theme 3 - Unicorns & Fairies</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Heebo', sans-serif;
+    width: 360px;
+    height: 800px;
+    overflow: hidden;
+    background: linear-gradient(160deg, #ffe0f7 0%, #e8d5ff 35%, #d0eeff 70%, #ffd6f0 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+  }
+
+  .sparkle {
+    position: absolute;
+    pointer-events: none;
+    animation: float linear infinite;
+    z-index: 0;
+  }
+  @keyframes float {
+    0%   { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+    100% { transform: translateY(-820px) rotate(360deg); opacity: 0; }
+  }
+
+  .top-bar {
+    width: 100%;
+    padding: 14px 20px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hearts { display: flex; gap: 4px; }
+  .heart { font-size: 22px; }
+
+  .score-pill {
+    background: linear-gradient(135deg, #ff9de2, #c77dff);
+    border-radius: 20px;
+    padding: 5px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 4px 12px rgba(199,125,255,0.45);
+  }
+
+  .title-row {
+    width: 340px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .title-rainbow {
+    font-size: 58px;
+    line-height: 1;
+    filter: drop-shadow(0 3px 10px rgba(255,100,200,0.5));
+  }
+
+  .title-label {
+    font-size: 20px;
+    color: #c77dff;
+    font-weight: 900;
+    padding-bottom: 10px;
+    text-shadow: 0 0 12px rgba(199,125,255,0.5);
+    text-align: center;
+  }
+
+  .title-horse {
+    font-size: 72px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 14px rgba(199,125,255,0.6));
+    animation: horseWiggle 3s ease-in-out infinite;
+    transform-origin: bottom center;
+  }
+
+  @keyframes horseWiggle {
+    0%,100% { transform: rotate(-4deg) translateY(0); }
+    50%      { transform: rotate(4deg) translateY(-5px); }
+  }
+
+  .photo-container {
+    margin: 2px 0 10px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .photo-ring {
+    width: 228px;
+    height: 228px;
+    border-radius: 50%;
+    padding: 5px;
+    animation: colorSpin 5s linear infinite;
+  }
+
+  @keyframes colorSpin {
+    0%   { background: linear-gradient(0deg,   #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(255,110,216,0.5); }
+    25%  { background: linear-gradient(90deg,  #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(133,212,255,0.5); }
+    50%  { background: linear-gradient(180deg, #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(255,224,102,0.5); }
+    75%  { background: linear-gradient(270deg, #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(199,125,255,0.5); }
+    100% { background: linear-gradient(360deg, #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(255,110,216,0.5); }
+  }
+
+  .photo-frame {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 90px;
+    overflow: hidden;
+  }
+
+  .orbit {
+    position: absolute;
+    top: -16px; left: -16px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    animation: spin 9s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .orbit span { position: absolute; font-size: 15px; }
+
+  .question {
+    font-size: 17px;
+    font-weight: 700;
+    color: #8b5cf6;
+    text-align: center;
+    margin-bottom: 14px;
+    text-shadow: 0 1px 4px rgba(139,92,246,0.2);
+    position: relative;
+    z-index: 2;
+  }
+
+  .answers {
+    width: 320px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .answer-btn {
+    background: rgba(255,255,255,0.78);
+    backdrop-filter: blur(12px);
+    border: 2.5px solid rgba(199,125,255,0.4);
+    border-radius: 20px;
+    padding: 16px 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #7c3aed;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(199,125,255,0.18);
+    transition: all 0.15s;
+  }
+  .answer-btn:active { transform: scale(0.96); }
+  .answer-btn.correct {
+    background: linear-gradient(135deg, #a8edca, #6dd5a8);
+    border-color: #4ade80;
+    color: #065f46;
+    box-shadow: 0 4px 16px rgba(74,222,128,0.4);
+  }
+
+  .magic-divider {
+    font-size: 15px;
+    letter-spacing: 6px;
+    margin: 2px 0 10px;
+    opacity: 0.65;
+    position: relative;
+    z-index: 2;
+  }
+
+  .next-btn {
+    width: 320px;
+    background: linear-gradient(90deg, #ff9de2, #c77dff, #85d4ff);
+    border: none;
+    border-radius: 24px;
+    padding: 17px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(199,125,255,0.5);
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+</style>
+</head>
+<body>
+
+  <div class="sparkle" style="left:20px;top:700px;font-size:13px;animation-duration:6s;animation-delay:0s">✨</div>
+  <div class="sparkle" style="left:75px;top:750px;font-size:9px;animation-duration:8s;animation-delay:1.2s">⭐</div>
+  <div class="sparkle" style="left:300px;top:720px;font-size:12px;animation-duration:7s;animation-delay:2s">💫</div>
+  <div class="sparkle" style="left:330px;top:680px;font-size:8px;animation-duration:5s;animation-delay:0.5s">✨</div>
+  <div class="sparkle" style="left:160px;top:760px;font-size:15px;animation-duration:9s;animation-delay:3s">🌟</div>
+  <div class="sparkle" style="left:50px;top:640px;font-size:10px;animation-duration:7.5s;animation-delay:4s">💜</div>
+  <div class="sparkle" style="left:260px;top:650px;font-size:11px;animation-duration:6.5s;animation-delay:1.8s">🌸</div>
+
+  <div class="top-bar">
+    <div class="hearts">
+      <span class="heart">💜</span>
+      <span class="heart">💜</span>
+      <span class="heart">🤍</span>
+    </div>
+    <div class="score-pill">🦄 3</div>
+  </div>
+
+  <div class="title-row">
+    <div class="title-horse">🦄</div>
+    <div class="title-label">חידון הפירות</div>
+    <div class="title-rainbow">🌈</div>
+  </div>
+
+  <div class="photo-container">
+    <div class="photo-ring">
+      <div class="photo-frame">🥭</div>
+    </div>
+    <div class="orbit">
+      <span style="top:0;left:50%;transform:translateX(-50%)">✨</span>
+      <span style="top:50%;right:-4px;transform:translateY(-50%)">💫</span>
+      <span style="bottom:0;left:50%;transform:translateX(-50%)">⭐</span>
+      <span style="top:50%;left:-4px;transform:translateY(-50%)">🌟</span>
+      <span style="top:8%;right:12%">✨</span>
+      <span style="bottom:8%;left:12%">💫</span>
+    </div>
+  </div>
+
+  <p class="question">✨ מה הפרי הזה? ✨</p>
+
+  <div class="answers">
+    <button class="answer-btn correct">מנגו</button>
+    <button class="answer-btn">תמר</button>
+    <button class="answer-btn">פפאיה</button>
+    <button class="answer-btn">ליצ'י</button>
+  </div>
+
+  <div class="magic-divider">🌸 💜 🌸</div>
+  <button class="next-btn">🦄 ← הפרי הבא 🌈</button>
+
+</body>
+</html>
