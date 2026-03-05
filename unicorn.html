@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>חידון פירות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background:
+    radial-gradient(ellipse at 30% 0%, #ffe0f7 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, #e0d4ff 0%, transparent 45%),
+    radial-gradient(ellipse at 10% 80%, #ffd4f0 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 90%, #d4f0ff 0%, transparent 45%),
+    linear-gradient(160deg, #fff0fc 0%, #f5e8ff 45%, #fff0f8 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+/* floating sparkles via pseudo-elements */
+body::before {
+  content: '✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧';
+  position: fixed;
+  top: 20px; left: 0; right: 0;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(200,130,220,0.4);
+  letter-spacing: 18px;
+  pointer-events: none;
+  animation: twinkle 4s ease-in-out infinite alternate;
+}
+body::after {
+  content: '✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
+  position: fixed;
+  bottom: 80px; left: 0; right: 0;
+  text-align: center;
+  font-size: 10px;
+  color: rgba(170,120,220,0.35);
+  letter-spacing: 20px;
+  pointer-events: none;
+  animation: twinkle 5s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes twinkle {
+  0%   { opacity: 0.3; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1.05); }
+}
+
+#app {
+  width: 360px;
+  height: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Topbar ── */
+#topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px 8px;
+}
+
+#hearts { font-size: 26px; letter-spacing: 3px; }
+
+#score {
+  font-size: 19px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #f9a8d4, #c084fc, #93c5fd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 6px rgba(192,132,252,0.5));
+  /* fallback for non-clip browsers */
+  color: #c084fc;
+}
+
+/* ── Fruit image: rainbow sparkle frame ── */
+#fruit-img-wrap {
+  margin-top: 18px;
+  padding: 5px;
+  border-radius: 28px;
+  background: linear-gradient(135deg, #f9a8d4, #c084fc, #93c5fd, #6ee7b7, #fde68a, #f9a8d4);
+  background-size: 300% 300%;
+  animation: rainbowSpin 4s linear infinite;
+  box-shadow: 0 0 30px rgba(192,132,252,0.35), 0 8px 30px rgba(0,0,0,0.1);
+}
+
+@keyframes rainbowSpin {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#fruit-img-inner {
+  padding: 6px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 24px;
+  backdrop-filter: blur(8px);
+}
+
+#fruit-img {
+  width: 204px;
+  height: 204px;
+  object-fit: cover;
+  border-radius: 20px;
+  display: block;
+}
+
+#fruit-name {
+  margin-top: 10px;
+  text-align: center;
+  height: 54px;
+  visibility: hidden;
+}
+#fruit-name .he {
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(90deg, #e879f9, #a855f7, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: #a855f7;
+}
+#fruit-name .en { font-size: 15px; color: #b08acf; margin-top: 2px; }
+
+#question {
+  margin-top: 14px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+/* ── Answer buttons: pastel candy ── */
+#answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 0 18px;
+  width: 100%;
+}
+
+.ans-btn {
+  background: rgba(255,255,255,0.75);
+  border: 2px solid rgba(216,180,254,0.7);
+  border-radius: 22px;
+  padding: 20px 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #6d28d9;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  touch-action: manipulation;
+  box-shadow:
+    0 4px 16px rgba(192,132,252,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.9);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.ans-btn:active { transform: scale(0.96); }
+
+.ans-btn.correct {
+  background: rgba(167,243,208,0.6);
+  border-color: rgba(74,222,128,0.8);
+  box-shadow: 0 0 20px rgba(74,222,128,0.4), 0 4px 16px rgba(0,0,0,0.06);
+  color: #166534;
+  animation: sparkleRight 0.4s ease-out;
+}
+
+.ans-btn.wrong {
+  background: rgba(254,202,202,0.6);
+  border-color: rgba(248,113,113,0.7);
+  box-shadow: 0 0 16px rgba(248,113,113,0.3);
+  animation: shake 0.38s ease-out;
+}
+
+@keyframes sparkleRight {
+  0%   { transform: scale(1.08); box-shadow: 0 0 35px rgba(74,222,128,0.6); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-9px); }
+  40%     { transform: translateX(9px); }
+  60%     { transform: translateX(-6px); }
+  80%     { transform: translateX(6px); }
+}
+
+/* ── Next button: rainbow magic ── */
+#next-btn {
+  margin-top: 22px;
+  padding: 15px 44px;
+  background: linear-gradient(135deg, #f9a8d4 0%, #c084fc 50%, #818cf8 100%);
+  color: #fff;
+  border: none;
+  border-radius: 36px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow:
+    0 6px 24px rgba(192,132,252,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.3);
+  display: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  text-shadow: 0 1px 3px rgba(100,50,150,0.25);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { box-shadow: 0 6px 24px rgba(192,132,252,0.5); }
+  50%       { box-shadow: 0 6px 36px rgba(192,132,252,0.8), 0 0 20px rgba(249,168,212,0.4); }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="topbar">
+    <div id="hearts"></div>
+    <div id="score">⭐ 0</div>
+  </div>
+  <div id="fruit-img-wrap">
+    <div id="fruit-img-inner">
+      <img id="fruit-img" src="" alt="fruit">
+    </div>
+  </div>
+  <div id="fruit-name">
+    <div class="he"></div>
+    <div class="en"></div>
+  </div>
+  <div id="question">מה הפרי הזה?</div>
+  <div id="answers"></div>
+  <button id="next-btn">← הפרי הבא</button>
+</div>
+
+<script>
+const ALL_FRUITS = [
+  { file:'mango.jpg',        he:'מנגו',       en:'Mango' },
+  { file:'dragonfruit.jpg',  he:'פיטאיה',     en:'Dragon Fruit' },
+  { file:'rambutan.jpg',     he:'רמבוטן',     en:'Rambutan' },
+  { file:'lychee.jpg',       he:'ליצ\'י',     en:'Lychee' },
+  { file:'starfruit.jpg',    he:'קרמבולה',    en:'Starfruit' },
+  { file:'papaya.jpg',       he:'פפאיה',      en:'Papaya' },
+  { file:'guava.jpg',        he:'גויאבה',     en:'Guava' },
+  { file:'passionfruit.jpg', he:'פסיפלורה',   en:'Passion Fruit' },
+  { file:'mangosteen.jpg',   he:'מנגוסטין',   en:'Mangosteen' },
+  { file:'longan.jpg',       he:'לונגן',      en:'Longan' },
+  { file:'jackfruit.jpg',    he:'ג\'קפרוט',   en:'Jackfruit' },
+  { file:'durian.jpg',       he:'דוריאן',     en:'Durian' },
+  { file:'feijoa.jpg',       he:'פיג\'ואה',   en:'Feijoa' },
+  { file:'persimmon.jpg',    he:'פרסימון',    en:'Persimmon' },
+  { file:'nashi.jpg',        he:'נאשי',       en:'Nashi Pear' },
+  { file:'kumquat.jpg',      he:'קומקווט',    en:'Kumquat' },
+  { file:'pomelo.jpg',       he:'פומלה',      en:'Pomelo' },
+  { file:'etrog.jpg',        he:'אתרוג',      en:'Etrog' },
+  { file:'pricklypear.jpg',  he:'סברס',       en:'Prickly Pear' },
+  { file:'date.jpg',         he:'תמר',        en:'Date' },
+  { file:'fig.jpg',          he:'תאנה',       en:'Fig' },
+  { file:'pomegranate.jpg',  he:'רימון',      en:'Pomegranate' },
+  { file:'quince.jpg',       he:'חבוש',       en:'Quince' },
+  { file:'acai.jpg',         he:'אסאי',       en:'Açaí' },
+  { file:'pineapple.jpg',    he:'אננס',       en:'Pineapple' },
+  { file:'coconut.jpg',      he:'קוקוס',      en:'Coconut' },
+  { file:'kiwi.jpg',         he:'קיווי',      en:'Kiwi' },
+  { file:'avocado.jpg',      he:'אבוקדו',     en:'Avocado' },
+  { file:'lucuma.jpg',       he:'לוקומה',     en:'Lucuma' },
+  { file:'sapodilla.jpg',    he:'ספדילה',     en:'Sapodilla' },
+  { file:'loquat.jpg',       he:'שסק',        en:'Loquat' },
+  { file:'banana.jpg',       he:'בננה',       en:'Banana' },
+  { file:'raspberry.jpg',    he:'פטל',        en:'Raspberry' },
+  { file:'blueberry.jpg',    he:'אוכמניות',   en:'Blueberry' },
+  { file:'cherry.jpg',       he:'דובדבן',     en:'Cherry' },
+];
+
+let fruits = [], queue = [], current;
+let hearts = 3, score = 0, locked = false;
+
+function checkImages() {
+  return Promise.all(ALL_FRUITS.map(f => new Promise(res => {
+    const img = new Image();
+    img.onload  = () => res(f);
+    img.onerror = () => res(null);
+    img.src = 'Images/' + f.file;
+  }))).then(r => r.filter(Boolean));
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.random() * (i + 1) | 0;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function nextFromQueue() {
+  if (!queue.length) queue = shuffle([...fruits]);
+  return queue.pop();
+}
+
+function startRound() {
+  hearts = 3;
+  locked = false;
+  current = nextFromQueue();
+
+  updateHearts();
+  document.getElementById('fruit-img').src = 'Images/' + current.file;
+  document.getElementById('fruit-name').style.visibility = 'hidden';
+  document.getElementById('next-btn').style.display = 'none';
+
+  const pool = shuffle(fruits.filter(f => f !== current));
+  const options = shuffle([current, ...pool.slice(0, 3)]);
+
+  const container = document.getElementById('answers');
+  container.innerHTML = '';
+  options.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.textContent = f.he;
+    btn.addEventListener('touchstart', e => { e.preventDefault(); tap(btn, f); }, { passive: false });
+    btn.addEventListener('click', () => tap(btn, f));
+    container.appendChild(btn);
+  });
+}
+
+function updateHearts() {
+  document.getElementById('hearts').textContent =
+    '❤️'.repeat(hearts) + '🤍'.repeat(3 - hearts);
+}
+
+function tap(btn, fruit) {
+  if (locked) return;
+  if (fruit === current) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('score').textContent = '⭐ ' + score;
+    locked = true;
+    reveal();
+    document.getElementById('next-btn').style.display = 'block';
+  } else {
+    btn.classList.add('wrong');
+    hearts--;
+    updateHearts();
+    setTimeout(() => btn.classList.remove('wrong'), 400);
+    if (hearts === 0) {
+      locked = true;
+      reveal();
+      document.getElementById('next-btn').style.display = 'block';
+    }
+  }
+}
+
+function reveal() {
+  const el = document.getElementById('fruit-name');
+  el.querySelector('.he').textContent = current.he;
+  el.querySelector('.en').textContent = current.en;
+  el.style.visibility = 'visible';
+}
+
+function nextFruit() { startRound(); }
+
+const nextBtn = document.getElementById('next-btn');
+nextBtn.addEventListener('touchstart', e => { e.preventDefault(); nextFruit(); }, { passive: false });
+nextBtn.addEventListener('click', nextFruit);
+
+checkImages().then(found => {
+  fruits = found;
+  startRound();
+});
+</script>
+</body>
+</html>
