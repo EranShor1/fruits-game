@@ -6,16 +6,11 @@
 <title>חידון פירות</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Heebo', sans-serif;
-  background:
-    radial-gradient(ellipse at 30% 0%, #ffe0f7 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, #e0d4ff 0%, transparent 45%),
-    radial-gradient(ellipse at 10% 80%, #ffd4f0 0%, transparent 45%),
-    radial-gradient(ellipse at 90% 90%, #d4f0ff 0%, transparent 45%),
-    linear-gradient(160deg, #fff0fc 0%, #f5e8ff 45%, #fff0f8 100%);
+  background: linear-gradient(160deg, #ffe0f7 0%, #e8d5ff 35%, #d0eeff 70%, #ffd6f0 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -23,33 +18,16 @@ body {
   overflow: hidden;
 }
 
-/* floating sparkles via pseudo-elements */
-body::before {
-  content: '✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧';
+/* Rising sparkles */
+.sparkle {
   position: fixed;
-  top: 20px; left: 0; right: 0;
-  text-align: center;
-  font-size: 11px;
-  color: rgba(200,130,220,0.4);
-  letter-spacing: 18px;
   pointer-events: none;
-  animation: twinkle 4s ease-in-out infinite alternate;
+  animation: floatUp linear infinite;
+  z-index: 0;
 }
-body::after {
-  content: '✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦ ✧ ✦';
-  position: fixed;
-  bottom: 80px; left: 0; right: 0;
-  text-align: center;
-  font-size: 10px;
-  color: rgba(170,120,220,0.35);
-  letter-spacing: 20px;
-  pointer-events: none;
-  animation: twinkle 5s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes twinkle {
-  0%   { opacity: 0.3; transform: scale(0.95); }
-  100% { opacity: 1; transform: scale(1.05); }
+@keyframes floatUp {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+  100% { transform: translateY(-820px) rotate(360deg); opacity: 0; }
 }
 
 #app {
@@ -62,69 +40,127 @@ body::after {
   z-index: 1;
 }
 
-/* ── Topbar ── */
+/* ── Top bar ── */
 #topbar {
   width: 100%;
+  padding: 14px 20px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 24px 8px;
+  position: relative;
+  z-index: 2;
 }
 
-#hearts { font-size: 26px; letter-spacing: 3px; }
+#hearts { display: flex; gap: 4px; font-size: 22px; }
 
 #score {
-  font-size: 19px;
+  background: linear-gradient(135deg, #ff9de2, #c77dff);
+  border-radius: 20px;
+  padding: 5px 16px;
+  font-size: 16px;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 12px rgba(199,125,255,0.45);
+}
+
+/* ── Title row with unicorn + rainbow ── */
+.title-row {
+  width: 340px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2px;
+  position: relative;
+  z-index: 2;
+}
+
+.title-rainbow {
+  font-size: 58px;
+  line-height: 1;
+  filter: drop-shadow(0 3px 10px rgba(255,100,200,0.5));
+}
+
+.title-label {
+  font-size: 20px;
+  color: #c77dff;
   font-weight: 900;
-  background: linear-gradient(135deg, #f9a8d4, #c084fc, #93c5fd);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 6px rgba(192,132,252,0.5));
-  /* fallback for non-clip browsers */
-  color: #c084fc;
+  padding-bottom: 10px;
+  text-shadow: 0 0 12px rgba(199,125,255,0.5);
+  text-align: center;
 }
 
-/* ── Fruit image: rainbow sparkle frame ── */
-#fruit-img-wrap {
-  margin-top: 18px;
+.title-horse {
+  font-size: 72px;
+  line-height: 1;
+  filter: drop-shadow(0 4px 14px rgba(199,125,255,0.6));
+  animation: horseWiggle 3s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes horseWiggle {
+  0%,100% { transform: rotate(-4deg) translateY(0); }
+  50%      { transform: rotate(4deg) translateY(-5px); }
+}
+
+/* ── Photo with animated rainbow ring + orbiting sparkles ── */
+.photo-container {
+  margin: 2px 0 8px;
+  position: relative;
+  z-index: 2;
+}
+
+.photo-ring {
+  width: 228px;
+  height: 228px;
+  border-radius: 50%;
   padding: 5px;
-  border-radius: 28px;
-  background: linear-gradient(135deg, #f9a8d4, #c084fc, #93c5fd, #6ee7b7, #fde68a, #f9a8d4);
-  background-size: 300% 300%;
-  animation: rainbowSpin 4s linear infinite;
-  box-shadow: 0 0 30px rgba(192,132,252,0.35), 0 8px 30px rgba(0,0,0,0.1);
+  animation: colorSpin 5s linear infinite;
+}
+@keyframes colorSpin {
+  0%   { background: linear-gradient(0deg,   #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(255,110,216,0.5); }
+  25%  { background: linear-gradient(90deg,  #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(133,212,255,0.5); }
+  50%  { background: linear-gradient(180deg, #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(255,224,102,0.5); }
+  75%  { background: linear-gradient(270deg, #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(199,125,255,0.5); }
+  100% { background: linear-gradient(360deg, #ff6ed8,#c77dff,#85d4ff,#ffe066); box-shadow: 0 0 28px rgba(255,110,216,0.5); }
 }
 
-@keyframes rainbowSpin {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-#fruit-img-inner {
-  padding: 6px;
-  background: rgba(255,255,255,0.85);
-  border-radius: 24px;
-  backdrop-filter: blur(8px);
+.photo-frame {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: white;
+  overflow: hidden;
 }
 
 #fruit-img {
-  width: 204px;
-  height: 204px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 20px;
   display: block;
 }
 
+/* Orbiting sparkles */
+.orbit {
+  position: absolute;
+  top: -16px; left: -16px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  animation: spin 9s linear infinite;
+  pointer-events: none;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.orbit span { position: absolute; font-size: 15px; }
+
 #fruit-name {
-  margin-top: 10px;
+  margin-top: 4px;
   text-align: center;
   height: 54px;
   visibility: hidden;
+  position: relative;
+  z-index: 2;
 }
 #fruit-name .he {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 900;
   background: linear-gradient(90deg, #e879f9, #a855f7, #3b82f6);
   -webkit-background-clip: text;
@@ -132,64 +168,65 @@ body::after {
   background-clip: text;
   color: #a855f7;
 }
-#fruit-name .en { font-size: 15px; color: #b08acf; margin-top: 2px; }
+#fruit-name .en { font-size: 14px; color: #b08acf; margin-top: 2px; }
 
 #question {
-  margin-top: 14px;
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 700;
-  color: #7c3aed;
+  color: #8b5cf6;
+  text-align: center;
+  margin-bottom: 12px;
+  text-shadow: 0 1px 4px rgba(139,92,246,0.2);
+  position: relative;
+  z-index: 2;
 }
 
-/* ── Answer buttons: pastel candy ── */
 #answers {
+  width: 320px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 18px;
-  padding: 0 18px;
-  width: 100%;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
 }
 
 .ans-btn {
-  background: rgba(255,255,255,0.75);
-  border: 2px solid rgba(216,180,254,0.7);
-  border-radius: 22px;
-  padding: 20px 8px;
+  background: rgba(255,255,255,0.78);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 2.5px solid rgba(199,125,255,0.4);
+  border-radius: 20px;
+  padding: 16px 10px;
   font-family: 'Heebo', sans-serif;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  color: #6d28d9;
+  color: #7c3aed;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   touch-action: manipulation;
-  box-shadow:
-    0 4px 16px rgba(192,132,252,0.2),
-    inset 0 1px 0 rgba(255,255,255,0.9);
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  box-shadow: 0 4px 12px rgba(199,125,255,0.18);
+  transition: all 0.15s;
 }
-
 .ans-btn:active { transform: scale(0.96); }
 
 .ans-btn.correct {
-  background: rgba(167,243,208,0.6);
-  border-color: rgba(74,222,128,0.8);
-  box-shadow: 0 0 20px rgba(74,222,128,0.4), 0 4px 16px rgba(0,0,0,0.06);
-  color: #166534;
-  animation: sparkleRight 0.4s ease-out;
+  background: linear-gradient(135deg, #a8edca, #6dd5a8);
+  border-color: #4ade80;
+  color: #065f46;
+  box-shadow: 0 4px 16px rgba(74,222,128,0.4);
+  animation: sparkleCorrect 0.35s ease-out;
 }
 
 .ans-btn.wrong {
-  background: rgba(254,202,202,0.6);
-  border-color: rgba(248,113,113,0.7);
-  box-shadow: 0 0 16px rgba(248,113,113,0.3);
+  background: rgba(254,202,202,0.7);
+  border-color: rgba(248,113,113,0.8);
+  color: #991b1b;
   animation: shake 0.38s ease-out;
 }
 
-@keyframes sparkleRight {
-  0%   { transform: scale(1.08); box-shadow: 0 0 35px rgba(74,222,128,0.6); }
+@keyframes sparkleCorrect {
+  0%   { transform: scale(1.08); box-shadow: 0 0 30px rgba(74,222,128,0.6); }
   100% { transform: scale(1); }
 }
 
@@ -201,52 +238,83 @@ body::after {
   80%     { transform: translateX(6px); }
 }
 
-/* ── Next button: rainbow magic ── */
-#next-btn {
-  margin-top: 22px;
-  padding: 15px 44px;
-  background: linear-gradient(135deg, #f9a8d4 0%, #c084fc 50%, #818cf8 100%);
-  color: #fff;
-  border: none;
-  border-radius: 36px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow:
-    0 6px 24px rgba(192,132,252,0.5),
-    inset 0 1px 0 rgba(255,255,255,0.3);
-  display: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-  text-shadow: 0 1px 3px rgba(100,50,150,0.25);
-  animation: shimmer 3s ease-in-out infinite;
+.magic-divider {
+  font-size: 15px;
+  letter-spacing: 6px;
+  margin: 2px 0 10px;
+  opacity: 0.65;
+  position: relative;
+  z-index: 2;
 }
 
-@keyframes shimmer {
-  0%, 100% { box-shadow: 0 6px 24px rgba(192,132,252,0.5); }
-  50%       { box-shadow: 0 6px 36px rgba(192,132,252,0.8), 0 0 20px rgba(249,168,212,0.4); }
+#next-btn {
+  width: 320px;
+  background: linear-gradient(90deg, #ff9de2, #c77dff, #85d4ff);
+  border: none;
+  border-radius: 24px;
+  padding: 17px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: white;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  box-shadow: 0 6px 20px rgba(199,125,255,0.5);
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  display: none;
 }
 </style>
 </head>
 <body>
+
+<!-- Rising sparkles -->
+<div class="sparkle" style="left:20px;top:700px;font-size:13px;animation-duration:6s;animation-delay:0s">✨</div>
+<div class="sparkle" style="left:75px;top:750px;font-size:9px;animation-duration:8s;animation-delay:1.2s">⭐</div>
+<div class="sparkle" style="left:300px;top:720px;font-size:12px;animation-duration:7s;animation-delay:2s">💫</div>
+<div class="sparkle" style="left:330px;top:680px;font-size:8px;animation-duration:5s;animation-delay:0.5s">✨</div>
+<div class="sparkle" style="left:160px;top:760px;font-size:15px;animation-duration:9s;animation-delay:3s">🌟</div>
+<div class="sparkle" style="left:50px;top:640px;font-size:10px;animation-duration:7.5s;animation-delay:4s">💜</div>
+<div class="sparkle" style="left:260px;top:650px;font-size:11px;animation-duration:6.5s;animation-delay:1.8s">🌸</div>
+
 <div id="app">
   <div id="topbar">
     <div id="hearts"></div>
-    <div id="score">⭐ 0</div>
+    <div id="score">🦄 0</div>
   </div>
-  <div id="fruit-img-wrap">
-    <div id="fruit-img-inner">
-      <img id="fruit-img" src="" alt="fruit">
+
+  <div class="title-row">
+    <div class="title-horse">🦄</div>
+    <div class="title-label">חידון הפירות</div>
+    <div class="title-rainbow">🌈</div>
+  </div>
+
+  <div class="photo-container">
+    <div class="photo-ring">
+      <div class="photo-frame">
+        <img id="fruit-img" src="" alt="fruit">
+      </div>
+    </div>
+    <div class="orbit">
+      <span style="top:0;left:50%;transform:translateX(-50%)">✨</span>
+      <span style="top:50%;right:-4px;transform:translateY(-50%)">💫</span>
+      <span style="bottom:0;left:50%;transform:translateX(-50%)">⭐</span>
+      <span style="top:50%;left:-4px;transform:translateY(-50%)">🌟</span>
+      <span style="top:8%;right:12%">✨</span>
+      <span style="bottom:8%;left:12%">💫</span>
     </div>
   </div>
+
   <div id="fruit-name">
     <div class="he"></div>
     <div class="en"></div>
   </div>
-  <div id="question">מה הפרי הזה?</div>
+  <div id="question">✨ מה הפרי הזה? ✨</div>
   <div id="answers"></div>
-  <button id="next-btn">← הפרי הבא</button>
+  <div class="magic-divider">🌸 💜 🌸</div>
+  <button id="next-btn">🦄 ← הפרי הבא 🌈</button>
 </div>
 
 <script>
@@ -340,7 +408,7 @@ function startRound() {
 
 function updateHearts() {
   document.getElementById('hearts').textContent =
-    '❤️'.repeat(hearts) + '🤍'.repeat(3 - hearts);
+    '💜'.repeat(hearts) + '🤍'.repeat(3 - hearts);
 }
 
 function tap(btn, fruit) {
@@ -348,7 +416,7 @@ function tap(btn, fruit) {
   if (fruit === current) {
     btn.classList.add('correct');
     score++;
-    document.getElementById('score').textContent = '⭐ ' + score;
+    document.getElementById('score').textContent = '🦄 ' + score;
     locked = true;
     reveal();
     document.getElementById('next-btn').style.display = 'block';

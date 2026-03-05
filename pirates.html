@@ -4,46 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>חידון פירות</title>
-<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Heebo:wght@400;700&display=swap" rel="stylesheet">
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Heebo', sans-serif;
-  background:
-    radial-gradient(ellipse at 50% 0%, #1a3a2a 0%, transparent 60%),
-    linear-gradient(180deg, #0d1f17 0%, #0a1a10 40%, #050d08 100%);
+  background: #0d0800;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   overflow: hidden;
-}
-
-/* rope border left+right */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  pointer-events: none;
-  border: 10px solid transparent;
-  border-image: repeating-linear-gradient(
-    45deg,
-    #6b4a1a 0px, #6b4a1a 8px,
-    #3d2a0a 8px, #3d2a0a 16px
-  ) 10;
-  z-index: 10;
-}
-
-/* fog/mist at top */
-body::after {
-  content: '';
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: 120px;
-  background: linear-gradient(180deg, rgba(180,220,200,0.06) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 1;
 }
 
 #app {
@@ -53,144 +25,282 @@ body::after {
   flex-direction: column;
   align-items: center;
   position: relative;
-  z-index: 2;
+  overflow: hidden;
 }
 
-/* ── Topbar with skull-and-crossbones vibe ── */
-#topbar {
+/* ── Background layers (all absolute) ── */
+.sky {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 210px;
+  background: linear-gradient(180deg, #0a0a1a 0%, #1a1000 60%, #0d0800 100%);
+  z-index: 0;
+}
+
+.stars {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 130px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.moon {
+  position: absolute;
+  top: 12px; right: 30px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffbe0, #f5d060);
+  box-shadow: 0 0 18px rgba(245,208,96,0.5), 0 0 40px rgba(245,208,96,0.2);
+  z-index: 1;
+  pointer-events: none;
+}
+.moon::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 10px;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #1a1000;
+  opacity: 0.18;
+}
+
+.cloud {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #2a1e0a, #1a1000);
+  opacity: 0.85;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.lightning {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(ellipse at 25% 8%, rgba(255,240,120,0.12), transparent 55%);
+  animation: flicker 5s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+@keyframes flicker {
+  0%,87%,89%,92%,100% { opacity: 1; }
+  88%,91% { opacity: 0.1; }
+}
+
+.ocean {
+  position: absolute;
+  top: 155px; left: 0; right: 0;
+  height: 60px;
+  background: linear-gradient(180deg, #0d1a2a 0%, #071020 100%);
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.ocean::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 300%; height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 30'%3E%3Cpath d='M0 10 Q50 0 100 10 Q150 20 200 10 Q250 0 300 10 Q350 20 400 10 L400 30 L0 30Z' fill='%23102030' opacity='0.8'/%3E%3C/svg%3E") repeat-x;
+  background-size: 200px 30px;
+  animation: waveSlow 4s linear infinite;
+}
+.ocean::after {
+  content: '';
+  position: absolute;
+  top: 8px; left: -100%; width: 300%; height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 30'%3E%3Cpath d='M0 15 Q50 5 100 15 Q150 25 200 15 Q250 5 300 15 Q350 25 400 15 L400 30 L0 30Z' fill='%230d1820' opacity='0.9'/%3E%3C/svg%3E") repeat-x;
+  background-size: 160px 30px;
+  animation: waveFast 2.5s linear infinite;
+}
+@keyframes waveSlow { from { transform: translateX(0); } to { transform: translateX(200px); } }
+@keyframes waveFast { from { transform: translateX(-80px); } to { transform: translateX(80px); } }
+
+.moon-reflection {
+  position: absolute;
+  top: 160px; right: 20px;
+  width: 20px; height: 50px;
+  background: linear-gradient(180deg, rgba(245,208,96,0.25), transparent);
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  animation: reflectShimmer 2s ease-in-out infinite;
+}
+@keyframes reflectShimmer {
+  0%,100% { opacity: 0.6; transform: scaleX(1); }
+  50%      { opacity: 1; transform: scaleX(1.4); }
+}
+
+.ship-wrap {
+  position: absolute;
+  top: 40px;
+  z-index: 2;
+  pointer-events: none;
+  animation: shipSail 16s linear infinite;
+}
+@keyframes shipSail {
+  0%   { left: -240px; }
+  100% { left: 380px; }
+}
+.ship-inner {
+  animation: shipRock 2.8s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes shipRock {
+  0%,100% { transform: rotate(-2.5deg) translateY(0px); }
+  50%      { transform: rotate(2.5deg) translateY(5px); }
+}
+
+/* ── Game content layers ── */
+.banner {
   width: 100%;
+  padding: 10px 16px 8px;
+  background: linear-gradient(180deg, #7a5800, #4a3200);
+  border-bottom: 3px solid #c9950a;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 24px 8px;
+  position: relative;
+  z-index: 4;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.9);
+  flex-shrink: 0;
 }
 
-#hearts { font-size: 26px; letter-spacing: 3px; }
+.banner-title {
+  font-family: 'Pirata One', cursive;
+  color: #f5d060;
+  font-size: 22px;
+  text-shadow: 0 0 14px rgba(245,208,96,0.7), 0 2px 4px rgba(0,0,0,0.9);
+  letter-spacing: 1px;
+  flex: 1;
+  text-align: center;
+}
+
+#topbar {
+  width: 100%;
+  padding: 175px 20px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
+}
+
+#hearts { display: flex; gap: 4px; font-size: 20px; }
 
 #score {
-  font-size: 19px;
-  font-weight: 900;
-  color: #f5d77a;
-  background: linear-gradient(135deg, #2a1a08 0%, #3d2a0a 100%);
-  border: 2px solid #8b6914;
+  background: linear-gradient(135deg, #7a5800, #c9950a);
+  border: 2px solid #f5d060;
+  border-radius: 20px;
   padding: 4px 14px;
-  border-radius: 8px;
-  box-shadow:
-    0 0 12px rgba(200,160,30,0.3),
-    inset 0 1px 0 rgba(255,220,80,0.15);
-  text-shadow: 0 0 8px rgba(245,215,120,0.6);
+  font-size: 15px;
+  font-weight: 700;
+  color: #f5d060;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.6);
 }
 
-/* ── Fruit image: treasure-chest frame ── */
-#fruit-img-wrap {
-  margin-top: 18px;
-  padding: 10px;
-  background: linear-gradient(145deg, #3d2a0a 0%, #1e1408 100%);
-  border: 3px solid #8b6914;
-  border-radius: 16px;
-  box-shadow:
-    0 0 0 1px #5a4210,
-    0 0 20px rgba(180,130,20,0.35),
-    0 12px 40px rgba(0,0,0,0.7),
-    inset 0 1px 0 rgba(255,200,60,0.12);
+.photo-container {
+  margin: 0 0 8px;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
+}
+
+.photo-frame {
+  width: 200px;
+  height: 200px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 4px solid #c9950a;
+  outline: 2px solid #4a3200;
+  box-shadow: 0 0 0 1px #c9950a, 0 8px 32px rgba(0,0,0,0.9), 0 0 28px rgba(201,149,10,0.3);
+  background: #1a0c00;
   position: relative;
 }
-
-/* corner rivets */
-#fruit-img-wrap::before,
-#fruit-img-wrap::after {
-  content: '⚓';
-  font-size: 14px;
-  position: absolute;
-  color: #8b6914;
-  opacity: 0.7;
+.photo-frame::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.35) 100%);
+  pointer-events: none; z-index: 1;
 }
-#fruit-img-wrap::before { top: 4px; right: 6px; }
-#fruit-img-wrap::after  { bottom: 4px; left: 6px; }
+.corner { position: absolute; font-size: 13px; opacity: 0.7; z-index: 2; }
 
 #fruit-img {
-  width: 204px;
-  height: 204px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 10px;
   display: block;
-  filter: saturate(1.1) contrast(1.05);
 }
 
 #fruit-name {
-  margin-top: 10px;
+  margin-top: 4px;
   text-align: center;
   height: 54px;
   visibility: hidden;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
 }
 #fruit-name .he {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 900;
-  color: #f5d77a;
-  text-shadow: 0 0 12px rgba(245,215,120,0.5), 0 2px 4px rgba(0,0,0,0.6);
+  color: #f5d060;
+  text-shadow: 0 0 12px rgba(245,208,96,0.5), 0 2px 4px rgba(0,0,0,0.9);
 }
-#fruit-name .en { font-size: 15px; color: #8a7a50; margin-top: 2px; }
+#fruit-name .en { font-size: 14px; color: #8a7a50; margin-top: 2px; }
 
 #question {
-  margin-top: 14px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #c8b07a;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  font-family: 'Pirata One', cursive;
+  font-size: 18px;
+  color: #f5d060;
+  text-align: center;
+  margin-bottom: 12px;
+  text-shadow: 0 0 10px rgba(245,208,96,0.4), 0 2px 4px rgba(0,0,0,0.9);
+  letter-spacing: 1px;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
 }
 
-/* ── Answer buttons: aged parchment planks ── */
 #answers {
+  width: 320px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-top: 18px;
-  padding: 0 18px;
-  width: 100%;
+  gap: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 4;
+  flex-shrink: 0;
 }
 
 .ans-btn {
-  background: linear-gradient(160deg, #2e1f0a 0%, #1e1408 100%);
-  border: 2px solid #6b4a1a;
-  border-radius: 12px;
-  padding: 20px 8px;
+  background: linear-gradient(180deg, #3a2800 0%, #1e1400 100%);
+  border: 2px solid #8b6914;
+  border-radius: 10px;
+  padding: 15px 10px;
   font-family: 'Heebo', sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
-  color: #d4b870;
+  color: #f5d060;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  box-shadow:
-    0 4px 14px rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(200,160,60,0.1),
-    inset 0 -1px 0 rgba(0,0,0,0.3);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
-  transition: transform 0.12s ease;
-  position: relative;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.04);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+  transition: all 0.15s;
 }
-
-.ans-btn:active { transform: scale(0.96); }
+.ans-btn:active { transform: scale(0.97); filter: brightness(1.2); }
 
 .ans-btn.correct {
-  background: linear-gradient(160deg, #1a3a1a 0%, #0d2210 100%);
-  border-color: #4a9a30;
-  box-shadow: 0 0 18px rgba(74,154,48,0.4), 0 4px 14px rgba(0,0,0,0.5);
-  color: #7dd65a;
-  text-shadow: 0 0 8px rgba(125,214,90,0.5);
-  animation: treasureFound 0.35s ease-out;
+  background: linear-gradient(180deg, #1a3a1a, #0d200d);
+  border-color: #4caf50;
+  color: #7dff80;
+  box-shadow: 0 0 16px rgba(76,175,80,0.35);
 }
 
 .ans-btn.wrong {
-  background: linear-gradient(160deg, #3a0a0a 0%, #220808 100%);
+  background: linear-gradient(180deg, #3a0a0a, #200808);
   border-color: #9a2020;
-  box-shadow: 0 0 14px rgba(180,30,30,0.3), 0 4px 14px rgba(0,0,0,0.5);
+  color: #ff8080;
   animation: shake 0.38s ease-out;
-}
-
-@keyframes treasureFound {
-  0%   { transform: scale(1.06); box-shadow: 0 0 30px rgba(200,160,30,0.6); }
-  100% { transform: scale(1); }
 }
 
 @keyframes shake {
@@ -201,46 +311,155 @@ body::after {
   80%     { transform: translateX(6px); }
 }
 
-/* ── Next button: gold plank ── */
+.rope {
+  width: 320px; height: 6px; border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #6b4f0a 0px, #c9950a 3px, #6b4f0a 6px);
+  opacity: 0.55; margin: 2px 0 10px;
+  position: relative; z-index: 4;
+  flex-shrink: 0;
+}
+
 #next-btn {
-  margin-top: 22px;
-  padding: 15px 44px;
-  background: linear-gradient(135deg, #c8960a 0%, #8b6504 100%);
-  color: #fff8e0;
-  border: 2px solid #f0c030;
+  width: 320px;
+  background: linear-gradient(180deg, #c9950a, #7a5800);
+  border: 2px solid #f5d060;
   border-radius: 10px;
-  font-family: 'Heebo', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
+  padding: 15px;
+  font-family: 'Pirata One', cursive;
+  font-size: 19px;
+  color: #1a0800;
   cursor: pointer;
-  box-shadow:
-    0 0 20px rgba(200,150,10,0.4),
-    0 5px 18px rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(255,230,100,0.3);
-  display: none;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.4);
-  letter-spacing: 0.5px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.7), 0 0 16px rgba(201,149,10,0.3);
+  letter-spacing: 1px;
+  position: relative; z-index: 4;
+  text-shadow: 0 1px 2px rgba(255,255,255,0.2);
+  display: none;
+  flex-shrink: 0;
 }
 </style>
 </head>
 <body>
 <div id="app">
+  <!-- Background layers -->
+  <div class="sky"></div>
+  <div class="lightning"></div>
+  <div class="moon"></div>
+  <div class="moon-reflection"></div>
+  <svg class="stars" viewBox="0 0 360 130" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="20" cy="15" r="1" fill="#fff" opacity="0.8"/>
+    <circle cx="55" cy="8" r="1.2" fill="#fff" opacity="0.9"/>
+    <circle cx="90" cy="22" r="0.8" fill="#fff" opacity="0.7"/>
+    <circle cx="130" cy="10" r="1" fill="#fff" opacity="0.85"/>
+    <circle cx="170" cy="5" r="1.3" fill="#fffbe0" opacity="0.9"/>
+    <circle cx="200" cy="18" r="0.9" fill="#fff" opacity="0.7"/>
+    <circle cx="240" cy="9" r="1.1" fill="#fff" opacity="0.8"/>
+    <circle cx="280" cy="20" r="0.8" fill="#fff" opacity="0.75"/>
+    <circle cx="310" cy="6" r="1.2" fill="#fffbe0" opacity="0.85"/>
+    <circle cx="40" cy="35" r="0.9" fill="#fff" opacity="0.6"/>
+    <circle cx="110" cy="42" r="0.7" fill="#fff" opacity="0.65"/>
+    <circle cx="160" cy="30" r="1" fill="#fff" opacity="0.7"/>
+    <circle cx="220" cy="38" r="0.8" fill="#fff" opacity="0.6"/>
+    <circle cx="270" cy="28" r="1.1" fill="#fff" opacity="0.75"/>
+    <g opacity="0.9">
+      <line x1="75" y1="48" x2="75" y2="54" stroke="#f5d060" stroke-width="0.8"/>
+      <line x1="72" y1="51" x2="78" y2="51" stroke="#f5d060" stroke-width="0.8"/>
+      <circle cx="75" cy="51" r="1.5" fill="#f5d060"/>
+    </g>
+    <g opacity="0.7">
+      <line x1="195" y1="42" x2="195" y2="46" stroke="#fff" stroke-width="0.6"/>
+      <line x1="193" y1="44" x2="197" y2="44" stroke="#fff" stroke-width="0.6"/>
+      <circle cx="195" cy="44" r="1" fill="#fff"/>
+    </g>
+  </svg>
+  <div class="cloud" style="width:120px;height:40px;top:14px;left:-10px;"></div>
+  <div class="cloud" style="width:90px;height:30px;top:8px;left:50px;"></div>
+  <div class="cloud" style="width:100px;height:35px;top:20px;left:120px;opacity:0.6;"></div>
+  <div class="cloud" style="width:80px;height:28px;top:10px;left:200px;opacity:0.5;"></div>
+  <div class="ocean"></div>
+  <div class="ship-wrap">
+    <div class="ship-inner">
+      <svg width="240" height="170" viewBox="0 0 240 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="120" cy="148" rx="88" ry="8" fill="#0d1a2a" opacity="0.6"/>
+        <path d="M50 145 Q80 138 120 140 Q160 138 190 145" stroke="#1a3a5a" stroke-width="2" opacity="0.5" fill="none"/>
+        <path d="M42 128 Q60 148 120 152 Q180 148 198 128 L188 112 L52 112Z" fill="#2a1200" stroke="#c9950a" stroke-width="1.5"/>
+        <path d="M55 130 Q80 143 120 145 Q160 143 185 130" stroke="#8b6914" stroke-width="0.8" fill="none" opacity="0.5"/>
+        <path d="M52 112 L188 112 L182 96 L58 96Z" fill="#1e0e00" stroke="#8b6914" stroke-width="1"/>
+        <line x1="80" y1="96" x2="78" y2="112" stroke="#0d0600" stroke-width="1" opacity="0.5"/>
+        <line x1="100" y1="96" x2="100" y2="112" stroke="#0d0600" stroke-width="1" opacity="0.5"/>
+        <line x1="120" y1="96" x2="120" y2="113" stroke="#0d0600" stroke-width="1" opacity="0.5"/>
+        <line x1="140" y1="96" x2="140" y2="112" stroke="#0d0600" stroke-width="1" opacity="0.5"/>
+        <line x1="160" y1="96" x2="162" y2="112" stroke="#0d0600" stroke-width="1" opacity="0.5"/>
+        <path d="M56 108 L184 108" stroke="#c9950a" stroke-width="2" opacity="0.8"/>
+        <rect x="64" y="100" width="8" height="6" rx="2" fill="#0d0600" stroke="#8b6914" stroke-width="0.8"/>
+        <rect x="82" y="100" width="8" height="6" rx="2" fill="#0d0600" stroke="#8b6914" stroke-width="0.8"/>
+        <rect x="100" y="100" width="8" height="6" rx="2" fill="#0d0600" stroke="#8b6914" stroke-width="0.8"/>
+        <rect x="130" y="100" width="8" height="6" rx="2" fill="#0d0600" stroke="#8b6914" stroke-width="0.8"/>
+        <rect x="148" y="100" width="8" height="6" rx="2" fill="#0d0600" stroke="#8b6914" stroke-width="0.8"/>
+        <rect x="166" y="100" width="8" height="6" rx="2" fill="#0d0600" stroke="#8b6914" stroke-width="0.8"/>
+        <line x1="60" y1="92" x2="10" y2="64" stroke="#5a3f08" stroke-width="3"/>
+        <path d="M10 64 L60 92 L50 75Z" fill="#9a8040" opacity="0.7" stroke="#7a6020" stroke-width="0.8"/>
+        <line x1="120" y1="10" x2="120" y2="98" stroke="#5a3f08" stroke-width="4"/>
+        <rect x="112" y="42" width="16" height="10" rx="2" fill="#2a1800" stroke="#8b6914" stroke-width="1"/>
+        <path d="M120 12 L148 32 L148 42 L120 42Z" fill="#b8860b" opacity="0.9" stroke="#8b6914" stroke-width="0.8"/>
+        <path d="M120 12 L92 32 L92 42 L120 42Z" fill="#a07808" opacity="0.8" stroke="#7a6020" stroke-width="0.8"/>
+        <line x1="92" y1="42" x2="148" y2="42" stroke="#5a3f08" stroke-width="2"/>
+        <path d="M120 42 L158 60 L155 92 L120 92Z" fill="#c9950a" opacity="0.88" stroke="#8b6914" stroke-width="1"/>
+        <path d="M120 42 L82 60 L85 92 L120 92Z" fill="#a07808" opacity="0.78" stroke="#7a6020" stroke-width="1"/>
+        <line x1="82" y1="60" x2="158" y2="60" stroke="#5a3f08" stroke-width="2.5"/>
+        <line x1="80" y1="28" x2="80" y2="98" stroke="#5a3f08" stroke-width="3"/>
+        <path d="M80 30 L100 46 L100 54 L80 54Z" fill="#b8860b" opacity="0.85" stroke="#8b6914" stroke-width="0.8"/>
+        <path d="M80 30 L60 46 L60 54 L80 54Z" fill="#9a7008" opacity="0.75" stroke="#7a6020" stroke-width="0.8"/>
+        <line x1="60" y1="54" x2="100" y2="54" stroke="#5a3f08" stroke-width="1.5"/>
+        <path d="M80 54 L105 68 L102 94 L80 94Z" fill="#c9950a" opacity="0.82" stroke="#8b6914" stroke-width="0.8"/>
+        <path d="M80 54 L55 68 L58 94 L80 94Z" fill="#a07808" opacity="0.72" stroke="#7a6020" stroke-width="0.8"/>
+        <line x1="55" y1="68" x2="105" y2="68" stroke="#5a3f08" stroke-width="2"/>
+        <line x1="158" y1="38" x2="158" y2="98" stroke="#5a3f08" stroke-width="2.5"/>
+        <path d="M158 40 L178 58 L175 90 L158 90Z" fill="#b8860b" opacity="0.8" stroke="#8b6914" stroke-width="0.8"/>
+        <path d="M158 40 L140 58 L143 90 L158 90Z" fill="#9a7008" opacity="0.7" stroke="#7a6020" stroke-width="0.8"/>
+        <line x1="140" y1="58" x2="178" y2="58" stroke="#5a3f08" stroke-width="1.8"/>
+        <line x1="120" y1="12" x2="58" y2="96" stroke="#8b6914" stroke-width="0.8" opacity="0.45"/>
+        <line x1="120" y1="12" x2="182" y2="96" stroke="#8b6914" stroke-width="0.8" opacity="0.45"/>
+        <line x1="120" y1="12" x2="80" y2="30" stroke="#8b6914" stroke-width="0.7" opacity="0.5"/>
+        <line x1="120" y1="12" x2="158" y2="40" stroke="#8b6914" stroke-width="0.7" opacity="0.5"/>
+        <line x1="80" y1="28" x2="10" y2="64" stroke="#8b6914" stroke-width="0.8" opacity="0.4"/>
+        <line x1="80" y1="28" x2="120" y2="12" stroke="#8b6914" stroke-width="0.6" opacity="0.5"/>
+        <line x1="158" y1="38" x2="120" y2="12" stroke="#8b6914" stroke-width="0.6" opacity="0.5"/>
+        <rect x="116" y="6" width="22" height="14" rx="1" fill="#0d0600" stroke="#c9950a" stroke-width="0.8"/>
+        <circle cx="122" cy="11" r="3" fill="#f5d060" opacity="0.9"/>
+        <circle cx="190" cy="90" r="5" fill="#f5d060" opacity="0.5"/>
+        <circle cx="190" cy="90" r="9" fill="#f5d060" opacity="0.1"/>
+        <circle cx="48" cy="95" r="4" fill="#c9950a" opacity="0.7"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Game content -->
+  <div class="banner">
+    <span style="font-size:18px">⚓</span>
+    <div class="banner-title">חידון הפירות</div>
+    <span style="font-size:18px">🏴‍☠️</span>
+  </div>
   <div id="topbar">
     <div id="hearts"></div>
-    <div id="score">⭐ 0</div>
+    <div id="score">🪙 0</div>
   </div>
-  <div id="fruit-img-wrap">
-    <img id="fruit-img" src="" alt="fruit">
+  <div class="photo-container">
+    <div class="photo-frame">
+      <img id="fruit-img" src="" alt="fruit">
+      <span class="corner" style="top:6px;right:8px">⚓</span>
+      <span class="corner" style="bottom:6px;left:8px">⚓</span>
+    </div>
   </div>
   <div id="fruit-name">
     <div class="he"></div>
     <div class="en"></div>
   </div>
-  <div id="question">מה הפרי הזה?</div>
+  <div id="question">⚓ מה הפרי הזה? ⚓</div>
   <div id="answers"></div>
-  <button id="next-btn">← הפרי הבא</button>
+  <div class="rope"></div>
+  <button id="next-btn">🏴‍☠️ ← הפרי הבא</button>
 </div>
 
 <script>
@@ -334,7 +553,7 @@ function startRound() {
 
 function updateHearts() {
   document.getElementById('hearts').textContent =
-    '❤️'.repeat(hearts) + '🤍'.repeat(3 - hearts);
+    '❤️'.repeat(hearts) + '🖤'.repeat(3 - hearts);
 }
 
 function tap(btn, fruit) {
@@ -342,7 +561,7 @@ function tap(btn, fruit) {
   if (fruit === current) {
     btn.classList.add('correct');
     score++;
-    document.getElementById('score').textContent = '⭐ ' + score;
+    document.getElementById('score').textContent = '🪙 ' + score;
     locked = true;
     reveal();
     document.getElementById('next-btn').style.display = 'block';
