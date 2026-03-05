@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>חידון פירות</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: linear-gradient(160deg, #fff8f0 0%, #ffe5cc 45%, #fde8f0 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+#app {
+  width: 360px;
+  height: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+#topbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px 8px;
+}
+
+#hearts { font-size: 26px; letter-spacing: 3px; }
+
+#score {
+  font-size: 20px;
+  font-weight: 900;
+  color: #e65100;
+}
+
+#fruit-img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 24px;
+  margin-top: 18px;
+  box-shadow: 0 10px 36px rgba(0,0,0,0.18);
+  display: block;
+}
+
+#fruit-name {
+  margin-top: 10px;
+  text-align: center;
+  height: 54px;
+  visibility: hidden;
+}
+#fruit-name .he { font-size: 28px; font-weight: 900; color: #4a148c; }
+#fruit-name .en { font-size: 15px; color: #999; margin-top: 2px; }
+
+#question {
+  margin-top: 14px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #5d3a1a;
+}
+
+#answers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 0 18px;
+  width: 100%;
+}
+
+.ans-btn {
+  background: rgba(255,255,255,0.72);
+  border: 2px solid rgba(255,255,255,0.9);
+  border-radius: 18px;
+  padding: 20px 8px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #3e2723;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(6px);
+  touch-action: manipulation;
+}
+
+.ans-btn.correct {
+  background: rgba(76,175,80,0.55);
+  border-color: #4caf50;
+  animation: flashGreen 0.35s ease-out;
+}
+
+.ans-btn.wrong {
+  background: rgba(244,67,54,0.45);
+  border-color: #f44336;
+  animation: shake 0.38s ease-out;
+}
+
+@keyframes flashGreen {
+  0%   { background: rgba(76,175,80,0.9); transform: scale(1.06); }
+  100% { background: rgba(76,175,80,0.55); transform: scale(1); }
+}
+
+@keyframes shake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-9px); }
+  40%     { transform: translateX(9px); }
+  60%     { transform: translateX(-6px); }
+  80%     { transform: translateX(6px); }
+}
+
+#next-btn {
+  margin-top: 22px;
+  padding: 15px 44px;
+  background: linear-gradient(135deg, #ffa726, #f4511e);
+  color: #fff;
+  border: none;
+  border-radius: 36px;
+  font-family: 'Heebo', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(244,81,30,0.45);
+  display: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="topbar">
+    <div id="hearts"></div>
+    <div id="score">⭐ 0</div>
+  </div>
+  <img id="fruit-img" src="" alt="fruit">
+  <div id="fruit-name">
+    <div class="he"></div>
+    <div class="en"></div>
+  </div>
+  <div id="question">מה הפרי הזה?</div>
+  <div id="answers"></div>
+  <button id="next-btn">הפרי הבא ➜</button>
+</div>
+
+<script>
+const ALL_FRUITS = [
+  { file:'mango.jpg',        he:'מנגו',       en:'Mango' },
+  { file:'dragonfruit.jpg',  he:'פיטאיה',     en:'Dragon Fruit' },
+  { file:'rambutan.jpg',     he:'רמבוטן',     en:'Rambutan' },
+  { file:'lychee.jpg',       he:'ליצ\'י',     en:'Lychee' },
+  { file:'starfruit.jpg',    he:'קרמבולה',    en:'Starfruit' },
+  { file:'papaya.jpg',       he:'פפאיה',      en:'Papaya' },
+  { file:'guava.jpg',        he:'גויאבה',     en:'Guava' },
+  { file:'passionfruit.jpg', he:'שעונית',     en:'Passion Fruit' },
+  { file:'mangosteen.jpg',   he:'מנגוסטין',   en:'Mangosteen' },
+  { file:'longan.jpg',       he:'לונגן',      en:'Longan' },
+  { file:'jackfruit.jpg',    he:'ג\'קפרוט',   en:'Jackfruit' },
+  { file:'durian.jpg',       he:'דוריאן',     en:'Durian' },
+  { file:'feijoa.jpg',       he:'פיג\'ואה',   en:'Feijoa' },
+  { file:'persimmon.jpg',    he:'פרסימון',    en:'Persimmon' },
+  { file:'nashi.jpg',        he:'נאשי',       en:'Nashi Pear' },
+  { file:'kumquat.jpg',      he:'קומקווט',    en:'Kumquat' },
+  { file:'pomelo.jpg',       he:'פומלה',      en:'Pomelo' },
+  { file:'etrog.jpg',        he:'אתרוג',      en:'Etrog' },
+  { file:'pricklypear.jpg',  he:'סברס',       en:'Prickly Pear' },
+  { file:'date.jpg',         he:'תמר',        en:'Date' },
+  { file:'fig.jpg',          he:'תאנה',       en:'Fig' },
+  { file:'pomegranate.jpg',  he:'רימון',      en:'Pomegranate' },
+  { file:'quince.jpg',       he:'חבוש',       en:'Quince' },
+  { file:'acai.jpg',         he:'אסאי',       en:'Açaí' },
+  { file:'pineapple.jpg',    he:'אננס',       en:'Pineapple' },
+  { file:'coconut.jpg',      he:'קוקוס',      en:'Coconut' },
+  { file:'kiwi.jpg',         he:'קיווי',      en:'Kiwi' },
+  { file:'avocado.jpg',      he:'אבוקדו',     en:'Avocado' },
+  { file:'lucuma.jpg',       he:'לוקומה',     en:'Lucuma' },
+  { file:'sapodilla.jpg',    he:'ספדילה',     en:'Sapodilla' },
+  { file:'loquat.jpg',       he:'שסק',        en:'Loquat' },
+  { file:'banana.jpg',       he:'בננה',       en:'Banana' },
+  { file:'raspberry.jpg',    he:'פטל',        en:'Raspberry' },
+  { file:'blueberry.jpg',    he:'אוכמניות',   en:'Blueberry' },
+  { file:'cherry.jpg',       he:'דובדבן',     en:'Cherry' },
+];
+
+let fruits = [], queue = [], current;
+let hearts = 3, score = 0, locked = false;
+
+function checkImages() {
+  return Promise.all(ALL_FRUITS.map(f => new Promise(res => {
+    const img = new Image();
+    img.onload  = () => res(f);
+    img.onerror = () => res(null);
+    img.src = 'Images/' + f.file;
+  }))).then(r => r.filter(Boolean));
+}
+
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.random() * (i + 1) | 0;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function nextFromQueue() {
+  if (!queue.length) queue = shuffle([...fruits]);
+  return queue.pop();
+}
+
+function startRound() {
+  hearts = 3;
+  locked = false;
+  current = nextFromQueue();
+
+  updateHearts();
+  document.getElementById('fruit-img').src = 'Images/' + current.file;
+  document.getElementById('fruit-name').style.visibility = 'hidden';
+  document.getElementById('next-btn').style.display = 'none';
+
+  // up to 3 wrong answers from other fruits
+  const pool = shuffle(fruits.filter(f => f !== current));
+  const options = shuffle([current, ...pool.slice(0, 3)]);
+
+  const container = document.getElementById('answers');
+  container.innerHTML = '';
+  options.forEach(f => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn';
+    btn.textContent = f.he;
+    btn.addEventListener('touchstart', e => { e.preventDefault(); tap(btn, f); }, { passive: false });
+    btn.addEventListener('click', () => tap(btn, f));
+    container.appendChild(btn);
+  });
+}
+
+function updateHearts() {
+  document.getElementById('hearts').textContent =
+    '❤️'.repeat(hearts) + '🤍'.repeat(3 - hearts);
+}
+
+function tap(btn, fruit) {
+  if (locked) return;
+  if (fruit === current) {
+    btn.classList.add('correct');
+    score++;
+    document.getElementById('score').textContent = '⭐ ' + score;
+    locked = true;
+    reveal();
+    document.getElementById('next-btn').style.display = 'block';
+  } else {
+    btn.classList.add('wrong');
+    hearts--;
+    updateHearts();
+    setTimeout(() => btn.classList.remove('wrong'), 400);
+    if (hearts === 0) {
+      locked = true;
+      reveal();
+      document.getElementById('next-btn').style.display = 'block';
+    }
+  }
+}
+
+function reveal() {
+  const el = document.getElementById('fruit-name');
+  el.querySelector('.he').textContent = current.he;
+  el.querySelector('.en').textContent = current.en;
+  el.style.visibility = 'visible';
+}
+
+function nextFruit() { startRound(); }
+
+const nextBtn = document.getElementById('next-btn');
+nextBtn.addEventListener('touchstart', e => { e.preventDefault(); nextFruit(); }, { passive: false });
+nextBtn.addEventListener('click', nextFruit);
+
+checkImages().then(found => {
+  fruits = found;
+  startRound();
+});
+</script>
+</body>
+</html>
